@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitor — Software Developer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #2d2d2d;
+      background: #fff;
+      line-height: 1.7;
+    }
+    a { color: #1a4db5; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; }
+
+    /* ── Design Tokens ── */
+    :root {
+      --navy:        #0d1b6e;
+      --navy-dark:   #091450;
+      --primary:     #1a4db5;
+      --primary-light: #e8eefa;
+      --gray-50:     #f8f9fb;
+      --gray-100:    #f0f2f7;
+      --gray-300:    #cbd0de;
+      --gray-500:    #6b7280;
+      --gray-700:    #374151;
+      --white:       #ffffff;
+      --section-alt: #f5f7fc;
+      --radius:      8px;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);
+      --transition:  .2s ease;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 62px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .navbar-brand {
+      color: #fff; font-weight: 700; font-size: 1.1rem; letter-spacing: .3px;
+    }
+    .navbar-brand:hover { color: #c5d3ff; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,.85); font-size: .9rem; font-weight: 500;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+    .nav-links a.active { color: #fff; border-bottom: 2px solid #6c9cff; padding-bottom: 2px; }
+
+    /* Hamburger */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: var(--transition); }
+
+    @media (max-width: 700px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; gap: .5rem;
+        position: absolute; top: 62px; left: 0; right: 0;
+        background: var(--navy-dark); padding: 1rem 2rem;
+      }
+      .nav-links.open { display: flex; }
+      .navbar { padding: 0 1.25rem; }
+    }
+
+    /* ── Page offset for fixed nav ── */
+    section { scroll-margin-top: 62px; }
+
+    /* ── Hero / About ── */
+    #about {
+      padding: 7rem 0 5rem;
+      background: var(--white);
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 680px) {
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .profile-side { display: flex; flex-direction: column; align-items: center; }
+    }
+    .avatar {
+      width: 180px; height: 180px; border-radius: 50%;
+      object-fit: cover;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      border: 4px solid var(--primary-light);
+    }
+    .avatar-placeholder {
+      width: 180px; height: 180px; border-radius: 50%;
+      background: linear-gradient(135deg, #c5d3ff 0%, #1a4db5 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; color: #fff;
+      border: 4px solid var(--primary-light);
+      flex-shrink: 0;
+    }
+    .profile-name { font-size: 1.6rem; font-weight: 700; margin-top: 1rem; }
+    .profile-title { color: var(--gray-500); font-size: .95rem; margin-top: .2rem; }
+    .profile-org a { color: var(--primary); font-size: .95rem; }
+    .social-links {
+      display: flex; gap: .8rem; margin-top: 1rem; list-style: none;
+      flex-wrap: wrap;
+    }
+    .social-links a {
+      color: var(--primary); font-size: 1.35rem;
+      transition: color var(--transition), transform var(--transition);
+    }
+    .social-links a:hover { color: var(--navy); transform: scale(1.15); text-decoration: none; }
+    .about-content h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
+    .about-content p { color: var(--gray-700); margin-bottom: .9rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+    @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+    .two-col h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: .75rem; color: var(--gray-700); }
+    .interests-list { list-style: none; }
+    .interests-list li { padding: .15rem 0; font-size: .95rem; color: var(--gray-700); }
+    .interests-list li::before { content: "▸ "; color: var(--primary); font-size: .8rem; }
+    .edu-item { margin-bottom: .75rem; }
+    .edu-item .deg { font-weight: 500; font-size: .95rem; }
+    .edu-item .inst { font-size: .85rem; color: var(--gray-500); }
+
+    /* ── Section wrapper ── */
+    .section-block { padding: 5rem 0; }
+    .section-block.alt { background: var(--section-alt); }
+    .section-header { margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: 1.85rem; font-weight: 700; }
+    .section-header p { color: var(--gray-500); margin-top: .4rem; }
+    .section-divider {
+      width: 48px; height: 4px; border-radius: 2px;
+      background: var(--primary); margin-top: .6rem;
+    }
+
+    /* ── Projects ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: box-shadow var(--transition), border-color var(--transition);
+      display: flex; flex-direction: column; gap: .6rem;
+    }
+    .project-card:hover { box-shadow: var(--shadow-md); border-color: #a0b4e8; }
+    .project-card-top { display: flex; align-items: flex-start; gap: .75rem; }
+    .project-icon { font-size: 1.5rem; color: var(--primary); flex-shrink: 0; margin-top: 2px; }
+    .project-title { font-size: 1.05rem; font-weight: 600; color: var(--primary); }
+    .project-title a:hover { text-decoration: underline; }
+    .project-desc { font-size: .9rem; color: var(--gray-700); flex-grow: 1; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+    .badge {
+      display: inline-block;
+      padding: .2rem .65rem;
+      border: 1.5px solid var(--primary);
+      border-radius: 4px;
+      font-size: .78rem; font-weight: 500;
+      color: var(--primary);
+      background: var(--white);
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+    .badge:hover { background: var(--primary); color: #fff; text-decoration: none; }
+    .badge.lang { border-color: var(--gray-500); color: var(--gray-500); font-size: .75rem; }
+    .badge.lang:hover { background: var(--gray-500); color: #fff; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .skill-group h3 {
+      font-size: .85rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-500); margin-bottom: .75rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .skill-tag {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      padding: .25rem .75rem;
+      font-size: .85rem; font-weight: 500;
+    }
+    .skill-tag.highlight {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ── Blog ── */
+    .blog-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .blog-item {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 1rem; align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      transition: box-shadow var(--transition);
+    }
+    .blog-item:hover { box-shadow: var(--shadow-md); }
+    .blog-title { font-size: 1.05rem; font-weight: 600; color: var(--primary); margin-bottom: .25rem; }
+    .blog-title a:hover { text-decoration: underline; }
+    .blog-meta { font-size: .82rem; color: var(--gray-500); }
+    .blog-tag {
+      display: inline-block; padding: .15rem .55rem;
+      background: var(--primary-light); color: var(--primary);
+      border-radius: 12px; font-size: .75rem; font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── Contact ── */
+    #contact { padding: 5rem 0; background: var(--white); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    @media (max-width: 620px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info-item {
+      display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.25rem;
+    }
+    .contact-icon { font-size: 1.2rem; color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+    .contact-label { font-size: .8rem; color: var(--gray-500); }
+    .contact-value { font-weight: 500; }
+    .contact-value a { color: var(--primary); }
+    .contact-form { display: flex; flex-direction: column; gap: .9rem; }
+    .form-group { display: flex; flex-direction: column; gap: .35rem; }
+    .form-group label { font-size: .85rem; font-weight: 500; color: var(--gray-700); }
+    .form-group input,
+    .form-group textarea {
+      border: 1.5px solid var(--gray-300); border-radius: var(--radius);
+      padding: .6rem .85rem; font-size: .9rem; font-family: inherit;
+      transition: border-color var(--transition);
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: var(--radius);
+      padding: .65rem 1.5rem; font-size: .95rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: background var(--transition);
+      align-self: flex-start;
+    }
+    .btn-primary:hover { background: var(--navy); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+    }
+    footer a { color: rgba(255,255,255,.75); }
+    footer a:hover { color: #fff; }
+
+    /* ── Back to top ── */
+    #back-top {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 50%;
+      width: 42px; height: 42px;
+      font-size: 1.1rem; cursor: pointer;
+      box-shadow: var(--shadow-md);
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition), background var(--transition);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #back-top.visible { opacity: 1; pointer-events: auto; }
+    #back-top:hover { background: var(--navy); }
+
+    /* ── "See all" link ── */
+    .see-all {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .9rem; font-weight: 600; color: var(--primary);
+      margin-top: 1.75rem; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .see-all:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ NAVBAR ══════════════════ -->
+<nav class="navbar" id="navbar">
+  <a class="navbar-brand" href="#about">Vitor</a>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">Home</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+
+<!-- ══════════════════ ABOUT ══════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="profile-side">
+        <div class="avatar-placeholder">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-name">Vitor</div>
+        <div class="profile-title">Software Developer</div>
+        <div class="profile-org"><a href="#">Your Company / Institution</a></div>
+        <ul class="social-links">
+          <li><a href="mailto:miraidohorizonte@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a></li>
+          <li><a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a></li>
+          <li><a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a></li>
+          <li><a href="https://twitter.com/" target="_blank" rel="noopener" aria-label="Twitter / X"><i class="fab fa-x-twitter"></i></a></li>
+        </ul>
+      </div>
+
+      <div class="about-content">
+        <p>
+          I'm a software developer passionate about building robust, well-tested backend systems.
+          My main language is <strong>Java</strong>, and I enjoy working across the full stack —
+          from designing clean APIs to optimizing database queries and writing maintainable code.
+        </p>
+        <p>
+          I'm especially interested in distributed systems, software architecture, and applying
+          computer science fundamentals to real-world engineering problems.
+          I also enjoy contributing to open-source and writing about what I learn.
+        </p>
+
+        <div class="two-col">
+          <div>
+            <h3>Interests</h3>
+            <ul class="interests-list">
+              <li>Backend Development (Java / Spring)</li>
+              <li>Distributed Systems</li>
+              <li>Software Architecture &amp; Design Patterns</li>
+              <li>Open Source</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Education</h3>
+            <div class="edu-item">
+              <div class="deg">🎓 B.Sc. in Computer Science</div>
+              <div class="inst">Your University, 20XX</div>
+            </div>
+            <div class="edu-item">
+              <div class="deg">🎓 Certification / Course</div>
+              <div class="inst">Platform, 20XX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════ PROJECTS ══════════════════ -->
+<section id="projects" class="section-block alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>Projects</h2>
+      <div class="section-divider"></div>
+      <p>Things I've built and shipped.</p>
+    </div>
+
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-server"></i></div>
+          <div>
+            <div class="project-title"><a href="#">REST API Boilerplate</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          A production-ready Spring Boot template with JWT auth, OpenAPI docs,
+          pagination, and Docker support — built to skip the boilerplate on every new project.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <a href="#" class="badge">Docs</a>
+          <span class="badge lang">Java</span>
+          <span class="badge lang">Spring Boot</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-database"></i></div>
+          <div>
+            <div class="project-title"><a href="#">Query Optimizer Tool</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          CLI tool that analyzes SQL query plans and suggests index improvements,
+          reducing average query time by up to 60% in test datasets.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <span class="badge lang">Java</span>
+          <span class="badge lang">PostgreSQL</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-cloud"></i></div>
+          <div>
+            <div class="project-title"><a href="#">Distributed Task Queue</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          Lightweight job queue built on top of Redis and Spring Boot, supporting
+          retries, dead-letter queues, and a simple web dashboard for monitoring.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <a href="#" class="badge">Demo</a>
+          <span class="badge lang">Java</span>
+          <span class="badge lang">Redis</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+          <div>
+            <div class="project-title"><a href="#">Auth Microservice</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          OAuth 2.0 / OIDC authorization server built with Spring Security and
+          Keycloak integration. Supports multi-tenant setups and refresh token rotation.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <span class="badge lang">Java</span>
+          <span class="badge lang">Keycloak</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+          <div>
+            <div class="project-title"><a href="#">Metrics Dashboard</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          Real-time metrics aggregation service using Micrometer and Prometheus,
+          with a Grafana dashboard for visualizing application health and performance KPIs.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <span class="badge lang">Java</span>
+          <span class="badge lang">Prometheus</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-top">
+          <div class="project-icon"><i class="fas fa-code-branch"></i></div>
+          <div>
+            <div class="project-title"><a href="#">Your Project Here</a></div>
+          </div>
+        </div>
+        <div class="project-desc">
+          A short description of your project — what problem it solves and what technologies it uses.
+        </div>
+        <div class="badge-row">
+          <a href="#" class="badge">GitHub</a>
+          <span class="badge lang">Java</span>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="#" class="see-all">See all projects <i class="fas fa-chevron-right" style="font-size:.75rem"></i></a>
+  </div>
+</section>
+
+
+<!-- ══════════════════ SKILLS ══════════════════ -->
+<section id="skills" class="section-block">
+  <div class="container">
+    <div class="section-header">
+      <h2>Skills</h2>
+      <div class="section-divider"></div>
+      <p>Technologies and tools I work with regularly.</p>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h3>Languages</h3>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Java</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">Bash</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Frameworks &amp; Libraries</h3>
+        <div class="skill-tags">
+          <span class="skill-tag highlight">Spring Boot</span>
+          <span class="skill-tag">Spring Security</span>
+          <span class="skill-tag">Hibernate / JPA</span>
+          <span class="skill-tag">JUnit 5</span>
+          <span class="skill-tag">Mockito</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Databases</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">MySQL</span>
+          <span class="skill-tag">Redis</span>
+          <span class="skill-tag">MongoDB</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>DevOps &amp; Tools</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">GitHub Actions</span>
+          <span class="skill-tag">Maven</span>
+          <span class="skill-tag">Gradle</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Architecture</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">Microservices</span>
+          <span class="skill-tag">Event-Driven</span>
+          <span class="skill-tag">SOLID</span>
+          <span class="skill-tag">DDD</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Cloud &amp; Messaging</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">AWS (basics)</span>
+          <span class="skill-tag">Kafka</span>
+          <span class="skill-tag">RabbitMQ</span>
+          <span class="skill-tag">Kubernetes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════ BLOG ══════════════════ -->
+<section id="blog" class="section-block alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>Blog</h2>
+      <div class="section-divider"></div>
+      <p>Notes and articles I've written.</p>
+    </div>
+
+    <div class="blog-list">
+
+      <div class="blog-item">
+        <div>
+          <div class="blog-title"><a href="#">Understanding Java Memory Model: a Practical Guide</a></div>
+          <div class="blog-meta">Jan 15, 2025 · 8 min read</div>
+        </div>
+        <span class="blog-tag">Java</span>
+      </div>
+
+      <div class="blog-item">
+        <div>
+          <div class="blog-title"><a href="#">Spring Boot + Testcontainers: Integration Testing Done Right</a></div>
+          <div class="blog-meta">Nov 3, 2024 · 12 min read</div>
+        </div>
+        <span class="blog-tag">Testing</span>
+      </div>
+
+      <div class="blog-item">
+        <div>
+          <div class="blog-title"><a href="#">Building a CQRS System with Spring and Kafka</a></div>
+          <div class="blog-meta">Sep 20, 2024 · 15 min read</div>
+        </div>
+        <span class="blog-tag">Architecture</span>
+      </div>
+
+      <div class="blog-item">
+        <div>
+          <div class="blog-title"><a href="#">Why I Stopped Writing Mutable DTOs</a></div>
+          <div class="blog-meta">Jul 7, 2024 · 6 min read</div>
+        </div>
+        <span class="blog-tag">Java</span>
+      </div>
+
+      <div class="blog-item">
+        <div>
+          <div class="blog-title"><a href="#">Your Post Title Here</a></div>
+          <div class="blog-meta">Month DD, YYYY · X min read</div>
+        </div>
+        <span class="blog-tag">Tag</span>
+      </div>
+
+    </div>
+
+    <a href="#" class="see-all">See all posts <i class="fas fa-chevron-right" style="font-size:.75rem"></i></a>
+  </div>
+</section>
+
+
+<!-- ══════════════════ CONTACT ══════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <h2>Contact</h2>
+      <div class="section-divider"></div>
+      <p>Feel free to reach out — always happy to talk about code, projects, or opportunities.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value"><a href="mailto:miraidohorizonte@gmail.com">miraidohorizonte@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fab fa-github"></i></div>
+          <div>
+            <div class="contact-label">GitHub</div>
+            <div class="contact-value"><a href="https://github.com/" target="_blank" rel="noopener">github.com/your-handle</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value"><a href="https://linkedin.com/" target="_blank" rel="noopener">linkedin.com/in/your-handle</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Brazil</div>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="your@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Say hello…" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <p>© 2026 · Vitor · Built with ♥ and Java</p>
+</footer>
+
+<!-- Back to top -->
+<button id="back-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+
+<script>
+  // ── Hamburger toggle ──
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  toggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => { navLinks.classList.remove('open'); toggle.setAttribute('aria-expanded', false); });
+  });
+
+  // ── Active nav link on scroll ──
+  const sections = document.querySelectorAll('section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAnchors.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // ── Back to top ──
+  const backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // ── Contact form (placeholder) ──
+  function handleSubmit(e) {
+    e.preventDefault();
+    alert('Thanks for your message! (Wire up a backend or Formspree to make this work.)');
+    e.target.reset();
+  }
+</script>
+</body>
+</html>
