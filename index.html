@@ -86,7 +86,9 @@
 
     /* ── Hero / About ── */
     #about {
-      padding: 7rem 0 5rem;
+      min-height: calc(100vh - 62px);
+      display: flex;
+      align-items: center;
       background: var(--white);
     }
     .container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
@@ -94,7 +96,7 @@
       display: grid;
       grid-template-columns: 200px 1fr;
       gap: 3rem;
-      align-items: start;
+      align-items: center;
     }
     @media (max-width: 680px) {
       .about-grid { grid-template-columns: 1fr; text-align: center; }
@@ -433,10 +435,10 @@
 
       <div class="blog-item">
         <div>
-          <div class="blog-title"><a href="posts/hello-world.html">Hello World: My First Post</a></div>
-          <div class="blog-meta">Mar 2026 · 3 min read</div>
+          <div class="blog-title"><a href="posts/rabbitmq-messaging-concepts.html">Introdução à Mensageria com RabbitMQ (Parte 1 – Conceitos)</a></div>
+          <div class="blog-meta">Sep 2025 · 8 min read</div>
         </div>
-        <span class="blog-tag">General</span>
+        <span class="blog-tag">RabbitMQ</span>
       </div>
 
     </div>
