@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introdução à Mensageria com RabbitMQ (Parte 1) — Vitor Araujo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #2d2d2d;
+      background: #fff;
+      line-height: 1.8;
+    }
+    a { color: #475569; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    :root {
+      --navy:        #1e293b;
+      --navy-dark:   #0f172a;
+      --primary:     #475569;
+      --primary-light: #f1f5f9;
+      --gray-500:    #6b7280;
+      --gray-700:    #374151;
+    }
+
+    .navbar {
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 62px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .navbar-brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .navbar-brand:hover { color: #cbd5e1; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,.85); font-size: .9rem; font-weight: 500; }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+
+    .post-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+    .post-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2rem; flex-wrap: wrap; gap: .75rem;
+    }
+    .post-back {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .9rem; color: var(--primary);
+    }
+    .post-back:hover { text-decoration: underline; }
+
+    /* Language toggle */
+    .lang-toggle {
+      display: inline-flex; border: 1.5px solid var(--primary); border-radius: 6px; overflow: hidden;
+    }
+    .lang-toggle button {
+      background: none; border: none; padding: .35rem .75rem;
+      font-size: .8rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; color: var(--primary);
+      transition: background .2s, color .2s;
+    }
+    .lang-toggle button.active {
+      background: var(--primary); color: #fff;
+    }
+    .lang-toggle button:not(.active):hover {
+      background: var(--primary-light);
+    }
+
+    .post-banner {
+      width: 100%; border-radius: 8px; margin-bottom: 1.5rem;
+    }
+    .post-tags { display: flex; gap: .4rem; margin-bottom: .75rem; flex-wrap: wrap; }
+    .post-tag {
+      display: inline-block; padding: .15rem .55rem;
+      background: var(--primary-light); color: var(--primary);
+      border-radius: 12px; font-size: .75rem; font-weight: 500;
+    }
+    .post-title {
+      font-size: 2rem; font-weight: 700; line-height: 1.3;
+      margin-bottom: .5rem;
+    }
+    .post-meta {
+      font-size: .85rem; color: var(--gray-500);
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .post-content h2 {
+      font-size: 1.35rem; font-weight: 600;
+      margin: 2.5rem 0 .75rem; color: var(--gray-700);
+    }
+    .post-content p { margin-bottom: 1.2rem; color: var(--gray-700); }
+    .post-content ul, .post-content ol {
+      margin-bottom: 1.2rem; padding-left: 1.5rem; color: var(--gray-700);
+    }
+    .post-content li { margin-bottom: .4rem; }
+    .post-content strong { color: #1e293b; }
+    .post-content img {
+      max-width: 100%; border-radius: 8px; margin: 1.5rem 0;
+    }
+    .post-content .note {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.5rem;
+      font-size: .92rem;
+    }
+    .post-content .note strong { color: var(--primary); }
+    .post-content a { color: #2563eb; }
+    .post-content a:hover { text-decoration: underline; }
+    .post-content .img-caption {
+      text-align: center; font-size: .82rem; color: var(--gray-500);
+      margin-top: -1rem; margin-bottom: 1.5rem;
+    }
+
+    .references { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; }
+    .references h2 { margin-top: 0; }
+    .references ul { list-style: disc; }
+    .references a { color: #2563eb; }
+
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+    }
+
+    [data-lang] { display: none; }
+    [data-lang].visible { display: block; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Vitor Araujo</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../index.html#skills">Skills</a></li>
+    <li><a href="../index.html#blog">Blog</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<article class="post-container">
+  <div class="post-top">
+    <a href="../index.html#blog" class="post-back"><i class="fas fa-arrow-left"></i> Back to blog</a>
+    <div class="lang-toggle">
+      <button id="btn-pt" class="active" onclick="setLang('pt')">PT</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <img class="post-banner" src="images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+
+  <div class="post-tags">
+    <span class="post-tag">Architecture</span>
+    <span class="post-tag">Microservices</span>
+    <span class="post-tag">Beginners</span>
+    <span class="post-tag">RabbitMQ</span>
+  </div>
+
+  <!-- ========== PORTUGUÊS ========== -->
+  <div data-lang="pt" class="visible">
+    <h1 class="post-title">Introdução à Mensageria com RabbitMQ (Parte 1 – Conceitos)</h1>
+    <div class="post-meta">10 Set 2025 · 8 min read</div>
+
+    <div class="post-content">
+      <p>Ao final deste artigo, espera-se que você seja capaz de:</p>
+      <ul>
+        <li>Definir mensageria e entender seu objetivo;</li>
+        <li>Explicar a relação entre mensageria, sistemas de mensagem e um message broker;</li>
+        <li>Identificar os componentes fundamentais de um sistema de mensagem;</li>
+        <li>Reconhecer e diferenciar os termos message broker, producer, consumer, exchange, queue, binding, listener, mensagem e topologia.</li>
+      </ul>
+
+      <h2>Introdução</h2>
+      <p>Quando navegamos na Internet, realizamos constantemente trocas de informações: recebemos o conteúdo de um site, enviamos dados por meio de formulários ou acionamos serviços ao clicar em botões.</p>
+      <p>Em determinadas situações, a prioridade é a velocidade da transmissão, mesmo correndo o risco de perda de pacotes.</p>
+      <p>Por exemplo, em videoconferências, para garantir comunicação em tempo real, voz e vídeo são enviados via protocolo UDP, que não assegura a entrega íntegra dos pacotes, o que pode resultar em queda de qualidade de imagem ou distorções de áudio.</p>
+      <p>Já em outras situações, como em arquiteturas de microsserviços, a prioridade é <strong>garantir</strong> a entrega da informação de um serviço ao outro e é nesse ponto que a mensageria ganha destaque.</p>
+
+      <h2>O que é mensageria, sistema de mensagem e message broker?</h2>
+      <p>O termo <strong>Mensageria</strong> é utilizado para descrever o processo de comunicação entre sistemas, componentes de software ou serviços através do envio e recebimento de mensagens.</p>
+      <p>Ao utilizarmos esse termo, não estamos fazendo referência a uma ferramenta específica mas sim ao <strong>mecanismo</strong> que possibilita a comunicação síncrona ou assíncrona entre sistemas distribuídos.</p>
+      <p>As mensagens enviadas e recebidas são blocos de dados (geralmente binários ou em formatos como JSON) definidos pelo desenvolvedor.</p>
+      <p>Para implementar essa comunicação em um sistema real, precisamos de uma infraestrutura capaz de aplicar esse mecanismo na prática.</p>
+      <p>E é aí que entra o <strong>sistema de mensagem</strong> que oferece recursos para:</p>
+      <ul>
+        <li>Criação, transmissão, armazenamento e entrega de mensagens entre aplicações</li>
+        <li>Protocolos de transporte (AMQP, MQTT, STOMP)</li>
+        <li>APIs e SDKs para produção e consumo</li>
+        <li>Suporte a filas, tópicos e roteamento</li>
+        <li>Message broker</li>
+      </ul>
+      <p>Como exemplo de sistema de mensagens, temos o RabbitMQ que suporta os protocolos AMQP, MQTT e STOMP. E também possui um <strong>message broker</strong>, componente responsável por receber, armazenar e encaminhar as mensagens entre os produtores e consumidores.</p>
+      <p>Na imagem abaixo, temos a interface visual do RabbitMQ que mostra em tempo real o que acontece dentro do message broker:</p>
+      <img src="images/rabbitmq-pt1/rabbit-mq-layout.webp" alt="Interface do RabbitMQ" />
+      <div class="note">
+        <strong>Observação:</strong> Tecnicamente, o message broker do RabbitMQ é apenas uma parte do sistema de mensagens. Mas no dia a dia, costuma-se chamar o RabbitMQ diretamente de broker.
+      </div>
+
+      <h2>Diagrama de um Sistema de Mensagem</h2>
+      <p>Agora que entendemos os principais conceitos, fica mais fácil visualizar esse processo em funcionamento. No diagrama abaixo, é possível acompanhar o caminho percorrido por uma mensagem: da aplicação produtora, passando pelo message broker (exchange e queue), até chegar ao consumidor que processa a informação e retorna o resultado para a aplicação final.</p>
+      <img src="images/rabbitmq-pt1/messaging-system-design.webp" alt="Diagrama de sistema de mensagem" />
+      <ol>
+        <li>A camada de negócio chama o componente produtor</li>
+        <li>O produtor envia a mensagem para uma exchange do message broker</li>
+        <li>A exchange roteia a mensagem para uma ou mais filas</li>
+        <li>O consumidor lê da fila e processa a mensagem</li>
+        <li>O resultado do processamento é utilizado pela aplicação</li>
+      </ol>
+      <p>No diagrama observamos o fluxo da mensagem desde o produtor até o consumidor. Dentro do próprio message broker, como você deve ter percebido, existem elementos que fazem esse processo acontecer de forma organizada.</p>
+
+      <h2>Componentes dentro do Message Broker</h2>
+      <img src="images/rabbitmq-pt1/message-broker-desing.webp" alt="Componentes do Message Broker" />
+      <p>A <strong>exchange</strong> recebe as mensagens enviadas pelo produtor e decide para onde cada uma deve seguir. Ela não armazena dados, apenas encaminha a mensagem com base em regras definidas.</p>
+      <p>Em seguida, temos a <strong>queue</strong>, que funciona como uma fila de espera. As mensagens ficam armazenadas nela até que algum consumidor esteja disponível para processá-las.</p>
+      <p>A ligação entre uma exchange e uma fila é chamada de <strong>binding</strong>. É através dessa configuração que o broker entende quais mensagens devem ser direcionadas para cada fila. Essa organização envolve as exchanges que estão presentes e o tipo de cada uma delas, como direct, fanout, topic ou headers (tópico que possivelmente será discutido em alguma postagem futura).</p>
+
+      <h2>Consumo de mensagens na aplicação</h2>
+      <p>A mensagem que chega à fila é processada por um consumidor. Na aplicação, esse papel costuma ser implementado por um <strong>listener</strong> que escuta a fila e, ao receber uma nova mensagem, executa a lógica de negócio. Com o processamento bem-sucedido, o consumidor envia um <strong>ACK</strong> ao broker, que então remove a mensagem da fila.</p>
+      <div class="note">
+        <strong>Observação:</strong> ACK é um sinal confirmando o processamento com sucesso da mensagem.
+      </div>
+      <p>Essa relação entre exchange, queue, binding e listener e a forma como eles se organizam dentro do sistema de mensagem é chamada de <strong>topologia</strong>. A topologia mostra quais exchanges existem e seus tipos, quais filas recebem mensagens, como os bindings conectam cada exchange às filas e quais consumidores estão ligados a cada uma delas.</p>
+      <p>Com isso, conseguimos modelar desde cenários simples, em que existe apenas uma fila consumida por um único serviço, até arquiteturas complexas, em que várias exchanges distribuem mensagens para diferentes filas e consumidores especializados.</p>
+      <p>Pensar na topologia é essencial porque ela define o caminho da informação dentro do sistema e garante que cada mensagem chegue ao destino correto.</p>
+
+      <h2>Conclusão</h2>
+      <p>Nesta primeira parte, organizamos os conceitos: produtor, exchange, fila, binding, listener e topologia. Com os termos claros e o percurso da mensagem bem entendido, implementar a topologia em código fica muito mais simples. Na parte dois, vamos para a prática com Java e RabbitMQ.</p>
+
+      <div class="references">
+        <h2>Referências</h2>
+        <ul>
+          <li><a href="https://www.rabbitmq.com/docs" target="_blank" rel="noopener">RabbitMQ Documentation</a></li>
+          <li><a href="https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html" target="_blank" rel="noopener">Part 1: RabbitMQ for beginners - What is RabbitMQ?</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ENGLISH ========== -->
+  <div data-lang="en">
+    <h1 class="post-title">Introduction to Messaging with RabbitMQ (Part 1 – Concepts)</h1>
+    <div class="post-meta">Sep 10, 2025 · 8 min read</div>
+
+    <div class="post-content">
+      <p>By the end of this article, you should be able to:</p>
+      <ul>
+        <li>Define messaging and understand its purpose;</li>
+        <li>Explain the relationship between messaging, messaging systems, and a message broker;</li>
+        <li>Identify the core components of a messaging system;</li>
+        <li>Recognize and differentiate the terms message broker, producer, consumer, exchange, queue, binding, listener, message, and topology.</li>
+      </ul>
+
+      <h2>Introduction</h2>
+      <p>When we browse the Internet, we constantly exchange information: we receive content from a website, submit data through forms, or trigger services by clicking buttons.</p>
+      <p>In some situations, the priority is transmission speed, even at the risk of packet loss.</p>
+      <p>For example, in video calls, to ensure real-time communication, voice and video are sent over UDP, which does not guarantee full packet delivery. This can result in lower image quality or audio distortion.</p>
+      <p>In other scenarios, such as microservice architectures, the priority is to <strong>guarantee</strong> that information is delivered from one service to another, and that's where messaging stands out.</p>
+
+      <h2>What is messaging, a messaging system, and a message broker?</h2>
+      <p>The term <strong>Messaging</strong> describes the process of communication between systems, software components, or services through sending and receiving messages.</p>
+      <p>When we use this term, we're not referring to a specific tool but rather to the <strong>mechanism</strong> that enables synchronous or asynchronous communication between distributed systems.</p>
+      <p>The messages sent and received are data blocks (usually binary or in formats like JSON) defined by the developer.</p>
+      <p>To implement this communication in a real system, we need an infrastructure capable of applying this mechanism in practice.</p>
+      <p>That's where the <strong>messaging system</strong> comes in, offering features for:</p>
+      <ul>
+        <li>Creating, transmitting, storing, and delivering messages between applications</li>
+        <li>Transport protocols (AMQP, MQTT, STOMP)</li>
+        <li>APIs and SDKs for producing and consuming</li>
+        <li>Support for queues, topics, and routing</li>
+        <li>Message broker</li>
+      </ul>
+      <p>As an example of a messaging system, RabbitMQ supports the AMQP, MQTT, and STOMP protocols. It also includes a <strong>message broker</strong>, the component responsible for receiving, storing, and forwarding messages between producers and consumers.</p>
+      <p>In the image below, we can see the RabbitMQ visual interface that shows in real time what's happening inside the message broker:</p>
+      <img src="images/rabbitmq-pt1/rabbit-mq-layout.webp" alt="RabbitMQ Interface" />
+      <div class="note">
+        <strong>Note:</strong> Technically, the RabbitMQ message broker is just one part of the messaging system. But in practice, people usually refer to RabbitMQ itself as "the broker."
+      </div>
+
+      <h2>Messaging System Diagram</h2>
+      <p>Now that we understand the key concepts, it's easier to visualize how this process works. In the diagram below, you can follow the path a message takes: from the producer application, through the message broker (exchange and queue), to the consumer that processes the information and returns the result to the final application.</p>
+      <img src="images/rabbitmq-pt1/messaging-system-design.webp" alt="Messaging system diagram" />
+      <ol>
+        <li>The business layer calls the producer component</li>
+        <li>The producer sends the message to an exchange in the message broker</li>
+        <li>The exchange routes the message to one or more queues</li>
+        <li>The consumer reads from the queue and processes the message</li>
+        <li>The processing result is used by the application</li>
+      </ol>
+      <p>In the diagram, we can see the message flow from producer to consumer. Inside the message broker itself, as you may have noticed, there are elements that make this process happen in an organized way.</p>
+
+      <h2>Components Inside the Message Broker</h2>
+      <img src="images/rabbitmq-pt1/message-broker-desing.webp" alt="Message Broker Components" />
+      <p>The <strong>exchange</strong> receives messages sent by the producer and decides where each one should go. It doesn't store data, it only forwards messages based on defined rules.</p>
+      <p>Next, we have the <strong>queue</strong>, which works like a waiting line. Messages are stored there until a consumer is available to process them.</p>
+      <p>The connection between an exchange and a queue is called a <strong>binding</strong>. It's through this configuration that the broker knows which messages should be directed to each queue. This organization involves the exchanges that are present and the type of each one, such as direct, fanout, topic, or headers (a topic that will possibly be discussed in a future post).</p>
+
+      <h2>Message Consumption in the Application</h2>
+      <p>The message that reaches the queue is processed by a consumer. In the application, this role is usually implemented by a <strong>listener</strong> that watches the queue and, upon receiving a new message, executes the business logic. When processing is successful, the consumer sends an <strong>ACK</strong> to the broker, which then removes the message from the queue.</p>
+      <div class="note">
+        <strong>Note:</strong> ACK is a signal confirming the successful processing of a message.
+      </div>
+      <p>This relationship between exchange, queue, binding, and listener, and the way they are organized within the messaging system, is called <strong>topology</strong>. The topology shows which exchanges exist and their types, which queues receive messages, how bindings connect each exchange to queues, and which consumers are connected to each one.</p>
+      <p>With this, we can model anything from simple scenarios, where a single queue is consumed by one service, to complex architectures where multiple exchanges distribute messages to different queues and specialized consumers.</p>
+      <p>Thinking about topology is essential because it defines the path of information within the system and ensures that each message reaches the correct destination.</p>
+
+      <h2>Conclusion</h2>
+      <p>In this first part, we organized the concepts: producer, exchange, queue, binding, listener, and topology. With the terms clear and the message path well understood, implementing the topology in code becomes much simpler. In part two, we'll get hands-on with Java and RabbitMQ.</p>
+
+      <div class="references">
+        <h2>References</h2>
+        <ul>
+          <li><a href="https://www.rabbitmq.com/docs" target="_blank" rel="noopener">RabbitMQ Documentation</a></li>
+          <li><a href="https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html" target="_blank" rel="noopener">Part 1: RabbitMQ for beginners - What is RabbitMQ?</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</article>
+
+<footer>
+  <p>&copy; 2026 · Vitor Araujo</p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.classList.toggle('visible', el.dataset.lang === lang);
+    });
+    document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang === 'pt' ? 'pt' : 'en';
+  }
+</script>
+</body>
+</html>
