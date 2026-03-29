@@ -214,18 +214,23 @@
 
     /* ── Blog ── */
     .blog-list { display: flex; flex-direction: column; gap: 1.5rem; }
-    .blog-item {
-      display: grid; grid-template-columns: 1fr auto;
-      gap: 1rem; align-items: center;
-      padding: 1.25rem 1.5rem;
+    .blog-card {
       background: var(--white);
       border: 1px solid var(--gray-300);
       border-radius: var(--radius);
-      transition: box-shadow var(--transition);
+      overflow: hidden;
+      transition: box-shadow var(--transition), border-color var(--transition);
     }
-    .blog-item:hover { box-shadow: var(--shadow-md); }
-    .blog-title { font-size: 1.05rem; font-weight: 600; color: var(--primary); margin-bottom: .25rem; }
-    .blog-title a:hover { text-decoration: underline; }
+    .blog-card:hover { box-shadow: var(--shadow-md); border-color: #94a3b8; }
+    .blog-card a { text-decoration: none; color: inherit; }
+    .blog-card-banner {
+      width: 100%; height: 200px; object-fit: cover; display: block;
+    }
+    .blog-card-body { padding: 1.25rem 1.5rem; }
+    .blog-card-tags { display: flex; gap: .4rem; margin-bottom: .5rem; flex-wrap: wrap; }
+    .blog-title { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: .35rem; }
+    .blog-title:hover { text-decoration: underline; }
+    .blog-desc { font-size: .9rem; color: var(--gray-700); margin-bottom: .6rem; line-height: 1.5; }
     .blog-meta { font-size: .82rem; color: var(--gray-500); }
     .blog-tag {
       display: inline-block; padding: .15rem .55rem;
@@ -433,12 +438,20 @@
 
     <div class="blog-list">
 
-      <div class="blog-item">
-        <div>
-          <div class="blog-title"><a href="posts/rabbitmq-messaging-concepts.html">Introdução à Mensageria com RabbitMQ (Parte 1 – Conceitos)</a></div>
-          <div class="blog-meta">Sep 2025 · 8 min read</div>
-        </div>
-        <span class="blog-tag">RabbitMQ</span>
+      <div class="blog-card">
+        <a href="posts/rabbitmq-messaging-concepts.html">
+          <img class="blog-card-banner" src="posts/images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+          <div class="blog-card-body">
+            <div class="blog-card-tags">
+              <span class="blog-tag">RabbitMQ</span>
+              <span class="blog-tag">Architecture</span>
+              <span class="blog-tag">Microservices</span>
+            </div>
+            <div class="blog-title">Introdução à Mensageria com RabbitMQ (Parte 1 – Conceitos)</div>
+            <div class="blog-desc">Entenda o que é mensageria, como funciona um message broker e conheça os componentes fundamentais do RabbitMQ: exchange, queue, binding e topologia.</div>
+            <div class="blog-meta">Sep 2025 · 8 min read</div>
+          </div>
+        </a>
       </div>
 
     </div>
