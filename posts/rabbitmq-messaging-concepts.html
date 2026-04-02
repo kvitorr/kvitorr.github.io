@@ -40,8 +40,26 @@
     .navbar-brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
     .navbar-brand:hover { color: #cbd5e1; text-decoration: none; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: rgba(255,255,255,.85); font-size: .9rem; font-weight: 500; }
+    .nav-links a {
+      color: rgba(255,255,255,.85); font-size: .9rem; font-weight: 500;
+      transition: color .2s ease;
+    }
     .nav-links a:hover { color: #fff; text-decoration: none; }
+
+    /* Hamburger */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: .2s ease; }
+
+    @media (max-width: 700px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; gap: .5rem;
+        position: absolute; top: 62px; left: 0; right: 0;
+        background: var(--navy-dark); padding: 1rem 2rem;
+      }
+      .nav-links.open { display: flex; }
+      .navbar { padding: 0 1.25rem; }
+    }
 
     .post-container {
       max-width: 720px;
@@ -142,13 +160,15 @@
 </head>
 <body>
 
-<nav class="navbar">
+<nav class="navbar" id="navbar">
   <a class="navbar-brand" href="../index.html">Vitor Araujo</a>
-  <ul class="nav-links">
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
     <li><a href="../index.html">Home</a></li>
     <li><a href="../index.html#skills">Skills</a></li>
     <li><a href="../index.html#blog">Blog</a></li>
-    <li><a href="../index.html#contact">Contact</a></li>
   </ul>
 </nav>
 
@@ -345,6 +365,17 @@
     document.getElementById('btn-en').classList.toggle('active', lang === 'en');
     document.documentElement.lang = lang === 'pt' ? 'pt' : 'en';
   }
+
+  // ── Hamburger toggle ──
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  toggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => { navLinks.classList.remove('open'); toggle.setAttribute('aria-expanded', false); });
+  });
 </script>
 </body>
 </html>
