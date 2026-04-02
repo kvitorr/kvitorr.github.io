@@ -46,6 +46,21 @@
       --shadow-md:   0 4px 16px rgba(0,0,0,.10);
       --transition:  .2s ease;
     }
+    [data-theme="dark"] {
+      --primary:       #94a3b8;
+      --primary-light: #1e293b;
+      --gray-50:       #0f172a;
+      --gray-100:      #1e293b;
+      --gray-300:      #334155;
+      --gray-500:      #94a3b8;
+      --gray-700:      #cbd5e1;
+      --white:         #1e293b;
+      --section-alt:   #0f172a;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.4);
+      --shadow-md:     0 4px 16px rgba(0,0,0,.5);
+    }
+    [data-theme="dark"] body { background: #0f172a; color: #e2e8f0; }
+    [data-theme="dark"] a { color: #94a3b8; }
 
     /* ── Navbar ── */
     .navbar {
@@ -68,9 +83,18 @@
     .nav-links a:hover { color: #fff; text-decoration: none; }
     .nav-links a.active { color: #fff; border-bottom: 2px solid #94a3b8; padding-bottom: 2px; }
 
-    /* Hamburger */
+    /* Hamburger + nav-actions */
+    .nav-actions { display: flex; align-items: center; gap: .5rem; }
     .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
     .nav-toggle span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: var(--transition); }
+    .theme-toggle {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,.85); font-size: 1rem;
+      padding: .4rem .5rem; border-radius: 6px;
+      transition: color var(--transition), background var(--transition);
+      display: flex; align-items: center;
+    }
+    .theme-toggle:hover { color: #fff; background: rgba(255,255,255,.12); }
 
     @media (max-width: 700px) {
       .nav-toggle { display: block; }
@@ -192,28 +216,16 @@
     .badge.lang { border-color: var(--gray-500); color: var(--gray-500); font-size: .75rem; }
     .badge.lang:hover { background: var(--gray-500); color: #fff; }
 
-    /* ── Skills ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
+    /* ── Mac Frame ── */
+    .mac-frame { border-radius: 10px; overflow: hidden; border: 1px solid rgba(0,0,0,.18); }
+    .mac-frame-bar {
+      background: #2d2d2d; padding: .45rem .75rem;
+      display: flex; gap: .45rem; align-items: center;
     }
-    .skill-group h3 {
-      font-size: .85rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .08em; color: var(--gray-500); margin-bottom: .75rem;
-    }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-    .skill-tag {
-      background: var(--primary-light);
-      color: var(--primary);
-      border-radius: 20px;
-      padding: .25rem .75rem;
-      font-size: .85rem; font-weight: 500;
-    }
-    .skill-tag.highlight {
-      background: var(--primary);
-      color: #fff;
-    }
+    .mac-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .mac-dot-red    { background: #ff5f57; }
+    .mac-dot-yellow { background: #febc2e; }
+    .mac-dot-green  { background: #28c840; }
 
     /* ── Blog ── */
     .blog-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
@@ -291,16 +303,22 @@
 
 <!-- ══════════════════ NAVBAR ══════════════════ -->
 <nav class="navbar" id="navbar">
-  <a class="navbar-brand" href="#about">Vitor</a>
-  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
+  <a class="navbar-brand" href="#about">
+    <img src="/imagens/heart-icon.png" alt="Logo" style="height:30px;width:30px;object-fit:contain;">
+  </a>
   <ul class="nav-links" id="nav-links">
     <li><a href="#about">Home</a></li>
-    <li><a href="#skills">Skills</a></li>
     <li><a href="#blog">Blog</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
 
@@ -364,69 +382,6 @@
 
 
 
-<!-- ══════════════════ SKILLS ══════════════════ -->
-<section id="skills" class="section-block">
-  <div class="container">
-    <div class="section-header">
-      <h2>Skills</h2>
-      <div class="section-divider"></div>
-      <p>Technologies and tools I work with regularly.</p>
-    </div>
-
-    <div class="skills-grid">
-      <div class="skill-group">
-        <h3>Languages</h3>
-        <div class="skill-tags">
-          <span class="skill-tag highlight">Java 17+</span>
-          <span class="skill-tag">SQL</span>
-          <span class="skill-tag">JavaScript</span>
-        </div>
-      </div>
-      <div class="skill-group">
-        <h3>Frameworks &amp; Libraries</h3>
-        <div class="skill-tags">
-          <span class="skill-tag highlight">Spring Boot</span>
-          <span class="skill-tag">Spring Security</span>
-          <span class="skill-tag">Hibernate / JPA</span>
-          <span class="skill-tag">JSF / PrimeFaces</span>
-          <span class="skill-tag">JUnit</span>
-          <span class="skill-tag">Mockito</span>
-        </div>
-      </div>
-      <div class="skill-group">
-        <h3>Databases</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">SQL Server</span>
-          <span class="skill-tag">PostgreSQL</span>
-        </div>
-      </div>
-      <div class="skill-group">
-        <h3>DevOps &amp; Tools</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Docker</span>
-          <span class="skill-tag">Git</span>
-          <span class="skill-tag">Maven</span>
-        </div>
-      </div>
-      <div class="skill-group">
-        <h3>Architecture</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">REST APIs</span>
-          <span class="skill-tag">Microservices</span>
-          <span class="skill-tag">Clean Code</span>
-          <span class="skill-tag">API Integrations</span>
-        </div>
-      </div>
-      <div class="skill-group">
-        <h3>Cloud &amp; Messaging</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">AWS (Lambda)</span>
-          <span class="skill-tag highlight">RabbitMQ</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 
@@ -444,7 +399,14 @@
 
       <div class="blog-card">
         <a href="posts/rabbitmq-messaging-concepts.html">
-          <img class="blog-card-banner" src="posts/images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+          <div class="mac-frame">
+            <div class="mac-frame-bar">
+              <span class="mac-dot mac-dot-red"></span>
+              <span class="mac-dot mac-dot-yellow"></span>
+              <span class="mac-dot mac-dot-green"></span>
+            </div>
+            <img class="blog-card-banner" src="posts/images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+          </div>
           <div class="blog-card-body">
             <div class="blog-card-tags">
               <span class="blog-tag">RabbitMQ</span>
@@ -475,6 +437,26 @@
 
 
 <script>
+  // ── Dark mode toggle ──
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = themeToggle.querySelector('i');
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+  }
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      themeIcon.classList.replace('fa-sun', 'fa-moon');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeIcon.classList.replace('fa-moon', 'fa-sun');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
   // ── Hamburger toggle ──
   const toggle = document.getElementById('nav-toggle');
   const navLinks = document.getElementById('nav-links');

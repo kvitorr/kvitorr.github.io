@@ -75,8 +75,17 @@
       background: var(--primary-light);
     }
 
+    .mac-frame { border-radius: 10px; overflow: hidden; border: 1px solid rgba(0,0,0,.18); margin-bottom: 1.5rem; }
+    .mac-frame-bar {
+      background: #2d2d2d; padding: .45rem .75rem;
+      display: flex; gap: .45rem; align-items: center;
+    }
+    .mac-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .mac-dot-red    { background: #ff5f57; }
+    .mac-dot-yellow { background: #febc2e; }
+    .mac-dot-green  { background: #28c840; }
     .post-banner {
-      width: 100%; border-radius: 8px; margin-bottom: 1.5rem;
+      width: 100%; display: block;
     }
     .post-tags { display: flex; gap: .4rem; margin-bottom: .75rem; flex-wrap: wrap; }
     .post-tag {
@@ -161,7 +170,14 @@
     </div>
   </div>
 
-  <img class="post-banner" src="images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+  <div class="mac-frame">
+    <div class="mac-frame-bar">
+      <span class="mac-dot mac-dot-red"></span>
+      <span class="mac-dot mac-dot-yellow"></span>
+      <span class="mac-dot mac-dot-green"></span>
+    </div>
+    <img class="post-banner" src="images/rabbitmq-pt1/banner.webp" alt="Introdução à Mensageria com RabbitMQ" />
+  </div>
 
   <div class="post-tags">
     <span class="post-tag">Architecture</span>
