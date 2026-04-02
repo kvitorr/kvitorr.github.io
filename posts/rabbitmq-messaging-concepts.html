@@ -74,6 +74,21 @@
       .navbar { padding: 0 1.25rem; }
     }
 
+    /* Hamburger */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: .2s ease; }
+
+    @media (max-width: 700px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; gap: .5rem;
+        position: absolute; top: 62px; left: 0; right: 0;
+        background: var(--navy-dark); padding: 1rem 2rem;
+      }
+      .nav-links.open { display: flex; }
+      .navbar { padding: 0 1.25rem; }
+    }
+
     .post-container {
       max-width: 720px;
       margin: 0 auto;
@@ -186,7 +201,6 @@
   <ul class="nav-links" id="nav-links">
     <li><a href="../index.html">Home</a></li>
     <li><a href="../index.html#blog">Blog</a></li>
-    <li><a href="../index.html#contact">Contact</a></li>
   </ul>
   <div class="nav-actions">
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
@@ -429,6 +443,17 @@
     document.getElementById('btn-en').classList.toggle('active', lang === 'en');
     document.documentElement.lang = lang === 'pt' ? 'pt' : 'en';
   }
+
+  // ── Hamburger toggle ──
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  toggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => { navLinks.classList.remove('open'); toggle.setAttribute('aria-expanded', false); });
+  });
 </script>
 </body>
 </html>
