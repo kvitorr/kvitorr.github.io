@@ -255,6 +255,15 @@
       white-space: nowrap;
     }
 
+    /* ── Contact ── */
+    #contact { padding: 5rem 0; background: var(--white); }
+    .contact-info-item {
+      display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.25rem;
+    }
+    .contact-icon { font-size: 1.2rem; color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+    .contact-label { font-size: .8rem; color: var(--gray-500); }
+    .contact-value { font-weight: 500; }
+    .contact-value a { color: var(--primary); }
     /* ── Footer ── */
     footer {
       background: var(--navy);
@@ -297,6 +306,7 @@
   <ul class="nav-links" id="nav-links">
     <li><a href="#about">Home</a></li>
     <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-actions">
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
