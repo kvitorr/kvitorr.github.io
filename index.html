@@ -30,8 +30,8 @@
 
     /* ── Design Tokens ── */
     :root {
-      --navy:        #1e293b;
-      --navy-dark:   #0f172a;
+      --navy:        #111111;
+      --navy-dark:   #111111;
       --primary:     #475569;
       --primary-light: #f1f5f9;
       --gray-50:     #f8f9fb;
@@ -98,6 +98,7 @@
 
     @media (max-width: 700px) {
       .nav-toggle { display: block; }
+      .nav-actions { margin-left: auto; }
       .nav-links {
         display: none; flex-direction: column; gap: .5rem;
         position: absolute; top: 62px; left: 0; right: 0;
@@ -306,7 +307,6 @@
   <ul class="nav-links" id="nav-links">
     <li><a href="#about">Home</a></li>
     <li><a href="#blog">Blog</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-actions">
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
