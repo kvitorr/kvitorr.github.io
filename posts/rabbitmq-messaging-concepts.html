@@ -279,7 +279,7 @@
       <p>No diagrama observamos o fluxo da mensagem desde o produtor até o consumidor. Dentro do próprio message broker, como você deve ter percebido, existem elementos que fazem esse processo acontecer de forma organizada.</p>
 
       <h2>Componentes dentro do Message Broker</h2>
-      <img src="images/rabbitmq-pt1/message-broker-desing.webp" alt="Componentes do Message Broker" style="width:60%; display:block; margin:0 auto;" />
+      <img src="images/rabbitmq-pt1/message-broker-desing.webp" alt="Componentes do Message Broker" style="width:60%; display:block; margin-block:1 auto;" />
       <p>A <strong>exchange</strong> recebe as mensagens enviadas pelo produtor e decide para onde cada uma deve seguir. Ela não armazena dados, apenas encaminha a mensagem com base em regras definidas.</p>
       <p>Em seguida, temos a <strong>queue</strong>, que funciona como uma fila de espera. As mensagens ficam armazenadas nela até que algum consumidor esteja disponível para processá-las.</p>
       <p>A ligação entre uma exchange e uma fila é chamada de <strong>binding</strong>. É através dessa configuração que o broker entende quais mensagens devem ser direcionadas para cada fila. Essa organização envolve as exchanges que estão presentes e o tipo de cada uma delas, como direct, fanout, topic ou headers (tópico que possivelmente será discutido em alguma postagem futura).</p>
